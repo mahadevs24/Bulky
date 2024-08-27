@@ -11,15 +11,15 @@ namespace BulkyWeb.Controllers
     public class CategoryController : Controller
     {
         //private readonly ApplicationDbContext _dbContext;
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            this._categoryRepository = categoryRepository;
+            this._unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            List<Category>? category = _categoryRepository.GetAll().ToList();
+            List<Category>? category = _unitOfWork.Category.GetAll().ToList();
             return View(category);
         }
 
@@ -53,10 +53,62 @@ namespace BulkyWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                _categoryRepository.Add(obj);
-                _categoryRepository.Save();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
                 return RedirectToAction("Index");
             }   return View();
+        }
+
+
+        public IActionResult Delete(int? Id)
+        {
+            if(Id == null )
+            {
+                return NotFound();
+            }
+
+           Category category= _unitOfWork.Category.Get(c => c.Id == Id);
+            return View(category);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Category obj)
+        {
+            if (obj == null)
+                return NotFound();
+
+            _unitOfWork.Category.Remove(obj);
+
+            _unitOfWork.Save();
+            List<Category>? category = _unitOfWork.Category.GetAll().ToList();
+            return RedirectToAction("Index");
+        }
+
+
+
+
+        public IActionResult Edit(int? Id)
+        {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
+            Category category = _unitOfWork.Category.Get(c => c.Id == Id);
+            return View(category);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category obj)
+        {
+            if (obj == null)
+                return NotFound();
+
+            _unitOfWork.Category.Update(obj);
+
+            _unitOfWork.Save();
+            List<Category>? category = _unitOfWork.Category.GetAll().ToList();
+            return RedirectToAction("Index");
         }
     }
 }

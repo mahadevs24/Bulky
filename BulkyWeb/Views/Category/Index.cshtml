@@ -8,7 +8,7 @@
         </div>
         <div class="col-6 text-end">
             <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-file-plus"></i>
+                <i class="bi bi-file-plus"></i> Create New Category
                 </a>
         </div>
     </div>
@@ -43,11 +43,11 @@
                     @category.DisplayOrder
                 </td>
                 <td>
-                    <button class="btn btn-primary" action=""><i class="bi bi-pencil-fill"></i></button>
+                    <a class="btn btn-primary" asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id"><i class="bi bi-pencil-fill"></i></a>
                     
                 </td>
                 <td>
-                    <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                    <a class="btn btn-danger" asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id"><i class="bi bi-trash"></i></a>
                 </td>
             </tr>
         }
